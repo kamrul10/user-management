@@ -29,7 +29,7 @@ def health_check(db: Session = Depends(get_db)):
     try:
         is_active_db = db.is_active
         if is_active_db:
-            return {"message": "ok", "status_code": status.HTTP_200_OK}
+            return {"message": "OK", "status_code": status.HTTP_200_OK}
     except Exception as ex:
         print(ex)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Health check failed")
