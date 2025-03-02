@@ -3,12 +3,13 @@ This file is responsible to define user routes
 """
 
 from datetime import timedelta
-from fastapi import APIRouter, status, HTTPException, Depends
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from api.rest_api.models import User, CreateUserRequest, AuthRequest
-from api.config.auth import get_password_hash, verify_password, create_access_token
+from api.config.auth import create_access_token, get_password_hash, verify_password
 from api.config.db import SessionLocal, UserDB
+from api.rest_api.models import AuthRequest, CreateUserRequest, User
 
 router = APIRouter()
 
@@ -32,9 +33,11 @@ def health_check(db: Session = Depends(get_db)):
             return {"message": "OK", "status_code": status.HTTP_200_OK}
     except Exception as ex:
         print(ex)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Health check failed")
-        
-    
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Health check failed",
+        )
+
 
 @router.post(
     "/users/",
@@ -50,7 +53,12 @@ def create_user(user: CreateUserRequest, db: Session = Depends(get_db)):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    return User(id=db_user.id, name=db_user.name, email=db_user.email, hashed_password=db_user.hashed_password)
+    return User(
+        id=db_user.id,
+        name=db_user.name,
+        email=db_user.email,
+        hashed_password=db_user.hashed_password,
+    )
 
 
 @router.post("/auth/token/")
@@ -60,8 +68,13 @@ def login(user: AuthRequest, db: Session = Depends(get_db)):
         if not db_user or not verify_password(user.password, db_user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        access_token = create_access_token(data={"sub": db_user.email}, expires_delta=timedelta(minutes=30))
+        access_token = create_access_token(
+            data={"sub": db_user.email}, expires_delta=timedelta(minutes=30)
+        )
         return {"access_token": access_token, "token_type": "bearer"}
     except Exception as ex:
         print(ex)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Something went wrong",
+        )

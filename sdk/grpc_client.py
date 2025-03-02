@@ -1,5 +1,7 @@
 import grpc
+
 from api.grpc.proto import user_pb2, user_pb2_grpc
+
 host = 'localhost:50051'
 def health_check():
     channel = grpc.insecure_channel(host)
