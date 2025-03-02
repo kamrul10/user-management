@@ -5,7 +5,7 @@ from api.config.db import SessionLocal, UserDB
 from api.grpc.proto import user_pb2, user_pb2_grpc
 from api.config.auth import get_password_hash, verify_password, create_access_token
 from datetime import timedelta
-
+from grpc_reflection.v1alpha import reflection
 
 class UserService(user_pb2_grpc.UserServiceServicer):
   
@@ -53,6 +53,11 @@ class UserService(user_pb2_grpc.UserServiceServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     user_pb2_grpc.add_UserServiceServicer_to_server(UserService(), server)
+    SERVICE_NAMES = (
+        user_pb2.DESCRIPTOR.services_by_name['UserService'].full_name,
+        reflection.SERVICE_NAME,
+    )
+    reflection.enable_server_reflection(SERVICE_NAMES, server)
     server.add_insecure_port('[::]:50051')
     server.start()
     print("gRPC server running on port 50051...")
