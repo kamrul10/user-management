@@ -14,10 +14,10 @@ class UserService(user_pb2_grpc.UserServiceServicer):
             db: Session = SessionLocal()
             is_active_db = db.is_active
             if is_active_db:
-                return user_pb2.HealthResponse(health="ok", status=f'{grpc.StatusCode.OK}')
+                return user_pb2.HealthResponse(health="OK", status=f'{grpc.StatusCode.OK}')
         except Exception as ex:
             print(ex)
-            return user_pb2.HealthResponse(health="failed", status=f'{grpc.StatusCode.INTERNAL}')
+            return user_pb2.HealthResponse(health="FAILING", status=f'{grpc.StatusCode.INTERNAL}')
                 
     def CreateUser(self, request, context):
         db: Session = SessionLocal()
