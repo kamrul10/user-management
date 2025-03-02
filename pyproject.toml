@@ -15,7 +15,7 @@ classifiers = [
   "Programming Language :: Python",
   "Operating System :: OS Independent"
 ]
-repository = "https://gitlab.sehlat.io/juliusbaer/gil/lisb-joice-asr-be-bak"
+repository = "https://github.com/kamrul10/user-management.git"
 package-mode = false
 
 [tool.poetry.dependencies]
