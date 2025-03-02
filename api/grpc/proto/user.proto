@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (User);
+  rpc GetUser (GetUserRequest) returns (User);
+  rpc Authenticate (AuthRequest) returns (AuthResponse);
+  rpc HealthCheck (HealthCheckRequest) returns (HealthResponse);
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message HealthCheckRequest {
+  
+}
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message AuthRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  string access_token = 1;
+  string token_type = 2;
+}
+
+message HealthResponse {
+  string health = 1;
+  string status = 2;
+}
